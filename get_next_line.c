@@ -6,11 +6,11 @@
 /*   By: nsabbah <nsabbah@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/24 17:35:41 by nsabbah           #+#    #+#             */
-/*   Updated: 2016/11/28 18:51:44 by nsabbah          ###   ########.fr       */
+/*   Updated: 2016/11/28 19:14:12 by nsabbah          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft/includes/libft.h"
+#include "libft/includes/libft.h"
 #include "get_next_line.h"
 #include <fcntl.h>
 #include <unistd.h>
@@ -49,7 +49,7 @@ int get_next_line(const int fd, char **line)
         tmp[cut] = '\0';
   //      printf("tmp after vaut :\n%s|\n", tmp);
 
-        return (0);
+        return (1);
       }
       h++;
     }
@@ -83,5 +83,5 @@ int get_next_line(const int fd, char **line)
   }
 //  printf("\n|%s|\n", line[0]);
 //  printf("\ntmp en bas vaut :\n%s\n", tmp);
-  return (0);
+  return (1);
 }
