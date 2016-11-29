@@ -13,7 +13,7 @@ int i = 0;
 
     (void)argc;
     fd = open((argv[1]), O_RDONLY);
-  while (i < 20)
+  while (i < 100)
   {
     line = (char **)malloc(sizeof(**line) * 1);
   // printf("\n          ######## Appel %i ########          \n", i);
