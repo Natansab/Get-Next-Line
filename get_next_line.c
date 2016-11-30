@@ -6,7 +6,7 @@
 /*   By: nsabbah <nsabbah@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/24 17:35:41 by nsabbah           #+#    #+#             */
-/*   Updated: 2016/11/29 18:52:21 by nsabbah          ###   ########.fr       */
+/*   Updated: 2016/11/30 16:21:02 by nsabbah          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,34 +19,36 @@
 
 int get_next_line(const int fd, char **line)
 {
-  static int i = 0;
+  int i;
   int j;
   int ret;
   static char *tmp = NULL;
   int h;
-  int cut;
 
-  line[0] = (char *)malloc(sizeof(*line) * 1000);
+  i = 0;
   h = 0;
-  // If there is already a newline in the buffer
+  if(!(line[0] = (char *)malloc(sizeof(*line) * 1000)))
+    return (0);
+  // If there is stuff in the tmp var
   if (tmp != NULL)
   {
     while (tmp[h])
     {
-      if (tmp[h] == '\n' || tmp[h] == '\0')
+      if (tmp[h] == '\n')
       {
         tmp[h] = '\0';
+   //     line[0] = strdup(tmp);
         strcpy(line[0], tmp);
-    //    printf("\n|%s|\n", line[0]);
-        cut = strlen(&tmp[h + 1]);
-        memmove(tmp, &tmp[h + 1], strlen(&tmp[h + 1]));
-        tmp[cut] = '\0';
+        // Copy 1 more char to include the '\0' at the end of tmp[h + 1]
+        memmove(tmp, &tmp[h + 1], strlen(&tmp[h + 1]) + 1);
         return (1);
       }
       h++;
     }
+    // If there is no newline in tmp, copy tmp in line [0]
     strcpy(line [0], tmp);
     i = strlen(tmp);
+    tmp = NULL;
   }
 
   while ((ret = read(fd, &line[0][i], BUFF_SIZE)))
@@ -58,17 +60,16 @@ int get_next_line(const int fd, char **line)
     while (line[0][j] != '\n' && line[0][j])
     j++;
     // If there is a newline in the buffer string, means should stop and return it
-    if (line[0][j] == '\n' || line[0][j] == '\0')
+    if (line[0][j] == '\n')
     {
-      tmp = (char *)malloc(sizeof(*tmp) * 1000);
+      // No need to malloc tmp since strdup does it
       tmp = strdup(&(line[0][j + 1]));
       line[0][j] = '\0';
       break;
     }
     i = i + ret;
   }
-  if (ret == 0)
+  if (ret == 0 && strlen(line[0]) == 0)
     return (0);
-//  printf("\nRet vaut %i et |%s|\n", ret, line[0]);
   return (1);
 }
