@@ -6,7 +6,7 @@
 /*   By: nsabbah <nsabbah@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/24 17:35:41 by nsabbah           #+#    #+#             */
-/*   Updated: 2016/11/30 16:21:02 by nsabbah          ###   ########.fr       */
+/*   Updated: 2016/11/30 19:09:03 by nsabbah          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int get_next_line(const int fd, char **line)
 
   i = 0;
   h = 0;
-  if(!(line[0] = (char *)malloc(sizeof(*line) * 1000)))
+  if(!(line[0] = (char *)malloc(sizeof(*line) * 10000000)))
     return (0);
   // If there is stuff in the tmp var
   if (tmp != NULL)
@@ -38,7 +38,8 @@ int get_next_line(const int fd, char **line)
       {
         tmp[h] = '\0';
    //     line[0] = strdup(tmp);
-        strcpy(line[0], tmp);
+     //   strcpy(line[0], tmp);
+         line[0] = strdup(tmp);
         // Copy 1 more char to include the '\0' at the end of tmp[h + 1]
         memmove(tmp, &tmp[h + 1], strlen(&tmp[h + 1]) + 1);
         return (1);
@@ -46,7 +47,8 @@ int get_next_line(const int fd, char **line)
       h++;
     }
     // If there is no newline in tmp, copy tmp in line [0]
-    strcpy(line [0], tmp);
+    line[0] = strdup(tmp);
+ //   strcpy(line [0], tmp);
     i = strlen(tmp);
     tmp = NULL;
   }
