@@ -6,11 +6,11 @@
 /*   By: nsabbah <nsabbah@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/24 17:35:41 by nsabbah           #+#    #+#             */
-/*   Updated: 2016/11/30 19:09:03 by nsabbah          ###   ########.fr       */
+/*   Updated: 2016/12/06 12:21:56 by nsabbah          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./libft/includes/libft.h"
+#include "libft/includes/libft.h"
 #include "get_next_line.h"
 #include <fcntl.h>
 #include <unistd.h>
@@ -19,57 +19,44 @@
 
 int get_next_line(const int fd, char **line)
 {
-  int i;
-  int j;
   int ret;
   static char *tmp = NULL;
-  int h;
+  int len;
+  char *str;
 
-  i = 0;
-  h = 0;
-  if(!(line[0] = (char *)malloc(sizeof(*line) * 10000000)))
+  /* Why do I need to malloc line[0] ?*/
+  if(!(line[0] = (char *)malloc(1)))
     return (0);
-  // If there is stuff in the tmp var
+  /* If there is stuff in the tmp var */
   if (tmp != NULL)
   {
-    while (tmp[h])
+    /* If there is a '\n in tmp, put it in line */
+    if (strchr(tmp, '\n') != NULL)
     {
-      if (tmp[h] == '\n')
-      {
-        tmp[h] = '\0';
-   //     line[0] = strdup(tmp);
-     //   strcpy(line[0], tmp);
-         line[0] = strdup(tmp);
-        // Copy 1 more char to include the '\0' at the end of tmp[h + 1]
-        memmove(tmp, &tmp[h + 1], strlen(&tmp[h + 1]) + 1);
-        return (1);
-      }
-      h++;
+      len = strchr(tmp, '\n') - tmp;
+      line[0] = ft_strsub(tmp, 0, len);
+      tmp = strchr(tmp, '\n') + 1;
+      return (1);
     }
-    // If there is no newline in tmp, copy tmp in line [0]
+    /* If there is no newline in tmp, copy tmp in line [0] */
     line[0] = strdup(tmp);
- //   strcpy(line [0], tmp);
-    i = strlen(tmp);
     tmp = NULL;
   }
 
-  while ((ret = read(fd, &line[0][i], BUFF_SIZE)))
+  str = (char *)malloc(BUFF_SIZE);
+  while ((ret = read(fd, str, BUFF_SIZE)))
   {
     if (ret == -1)
       return (-1);
-    line[0][i + ret] = '\0';
-    j = 0;
-    while (line[0][j] != '\n' && line[0][j])
-    j++;
-    // If there is a newline in the buffer string, means should stop and return it
-    if (line[0][j] == '\n')
+    str[ret] = '\0';
+    line[0] = ft_strjoin(line[0], str);
+    if (strchr(line[0], '\n') != NULL)
     {
-      // No need to malloc tmp since strdup does it
-      tmp = strdup(&(line[0][j + 1]));
-      line[0][j] = '\0';
+      len = strchr(line[0], '\n') - line[0];
+      tmp = strdup(&(line[0][len + 1]));
+      line[0][len] = '\0';
       break;
     }
-    i = i + ret;
   }
   if (ret == 0 && strlen(line[0]) == 0)
     return (0);
