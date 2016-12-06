@@ -6,7 +6,7 @@
 /*   By: nsabbah <nsabbah@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/24 17:35:41 by nsabbah           #+#    #+#             */
-/*   Updated: 2016/12/06 12:21:56 by nsabbah          ###   ########.fr       */
+/*   Updated: 2016/12/06 15:53:30 by nsabbah          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,26 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+int ft_tmp2line(char **tmp, char **line)
+{
+  int len;
+
+  if (*tmp == NULL)
+    return (0);
+  /* If there is a '\n in tmp, put it in line */
+  if (strchr(*tmp, '\n') != NULL)
+  {
+    len = strchr(*tmp, '\n') - *tmp;
+    line[0] = ft_strsub(*tmp, 0, len);
+    *tmp = strchr(*tmp, '\n') + 1;
+    return (1);
+  }
+  /* If there is no newline in tmp, copy tmp in line [0] */
+  line[0] = strdup(*tmp);
+  *tmp = NULL;
+  return (0);
+}
+
 int get_next_line(const int fd, char **line)
 {
   int ret;
@@ -25,23 +45,10 @@ int get_next_line(const int fd, char **line)
   char *str;
 
   /* Why do I need to malloc line[0] ?*/
-  if(!(line[0] = (char *)malloc(1)))
-    return (0);
-  /* If there is stuff in the tmp var */
-  if (tmp != NULL)
-  {
-    /* If there is a '\n in tmp, put it in line */
-    if (strchr(tmp, '\n') != NULL)
-    {
-      len = strchr(tmp, '\n') - tmp;
-      line[0] = ft_strsub(tmp, 0, len);
-      tmp = strchr(tmp, '\n') + 1;
-      return (1);
-    }
-    /* If there is no newline in tmp, copy tmp in line [0] */
-    line[0] = strdup(tmp);
-    tmp = NULL;
-  }
+  line[0] = (char *)malloc(1);
+
+  if (ft_tmp2line(&tmp, &line[0]))
+    return (1);
 
   str = (char *)malloc(BUFF_SIZE);
   while ((ret = read(fd, str, BUFF_SIZE)))
@@ -58,6 +65,7 @@ int get_next_line(const int fd, char **line)
       break;
     }
   }
+  free(str);
   if (ret == 0 && strlen(line[0]) == 0)
     return (0);
   return (1);
