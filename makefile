@@ -18,14 +18,14 @@ SRC=	main.c\
 
 OBJ= $(addprefix $(OBJDIR),$(SRC:.c=.o))
 
-CC= gcc
+CC= gcc -g
 CFLAGS= -Wall -Wextra -Werror
 
 LIBFT= ./libft/libft.a
 LIBINC= -I./libft
 LIBLINK= -L./libft -lft
 
-SRCDIR= ./src/
+SRCDIR= ./
 INCDIR= ./includes/
 OBJDIR= ./obj/
 
